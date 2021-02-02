@@ -1,5 +1,5 @@
-=== Akismet Anti-Spam ===
-Contributors: WpPlayground
+=== Advance Post FIlter: AJAX ===
+Contributors: WPPlayground
 Tags: filter, post, category, tag, ajax, fast, light
 Requires at least: 4.6
 Tested up to: 5.5
@@ -12,7 +12,7 @@ Advance Post Filter Ajax filters.
 
 
 
-Major features in Akismet include:
+Major features in Advance POst Filter - AJAX include:
 
 
 
