@@ -15,18 +15,20 @@ class APFA_Settings {
      * @var     string
      */
     private $plugin_name;
+
     /**
      * Class constructor
      */
     public function __construct() {
+
         if( defined( APFA_NAME ) ) {
-            $this->$plugin_name = APFA_NAME;
+            $this->plugin_name = APFA_NAME;
         } else {
-            $this->$plugin_name = "Advance Post Filter - Ajax";
+            $this->plugin_name = "Advance Post Filter - Ajax";
         }
         add_action( 'admin_menu', array( $this, 'apfa_menu' ) ); // Plugin Admin Menu
-        add_action( 'admin_init', array( $this, 'setup_sections' ) ); // Settings page
         add_action( 'admin_init', array( $this, 'setup_fields' ) ); // setting filds
+        add_action( 'admin_init', array( $this, 'setup_sections' ) ); // Settings page
     }
 
     /**
@@ -69,13 +71,15 @@ class APFA_Settings {
             case 'apfa_settings_general':
                 // echo '<p>'. $args['title'] .'</p>';
                 // Register a new setting for "apcfa" page.
-                register_setting( 'apfa', $args['uid'] );
+                register_setting( 'apfa', $args['id'] );
+                // register_setting( 'apfa', $args['uid'] );
                 break;
 
             case 'apfa_settings_customize':
                 // echo '<p>'. $args['title'] .'</p>';
                 // Register a new setting for "apcfa" page.
-                register_setting( 'apfa', $args['uid'] );
+                register_setting( 'apfa', $args['id'] );
+                // register_setting( 'apfa', $args['uid'] );
                 break;
         }
     }
@@ -117,6 +121,7 @@ class APFA_Settings {
         		'uid'     => 'numbers_of_post',
         		'label'   => __( 'Number of result posts', 'advance-post-filter-ajax' ),
                 'default'   => 6,
+                'placeholder' => 6,
         		'section' => 'apfa_settings_general',
         		'type'    => 'number',
                 'description' => __( 'Number of found post for filter result to show.', 'advance-post-filter-ajax' ),
@@ -163,6 +168,9 @@ class APFA_Settings {
         		'label' => __( 'Additional CSS', 'advance-post-filter-ajax' ),
         		'section' => 'apfa_settings_customize',
         		'type' => 'textarea',
+                'default' => '',
+                'placeholder' => '',
+                'description' => '',
         	),
             // additional JavaScript
             array(
@@ -170,6 +178,9 @@ class APFA_Settings {
         		'label' => __( 'Additional JavaScript', 'advance-post-filter-ajax' ),
         		'section' => 'apfa_settings_customize',
         		'type' => 'textarea',
+                'default' => '',
+                'placeholder' => '',
+                'description' => '',
         	),
         );
 
@@ -197,6 +208,7 @@ class APFA_Settings {
      *  Function that fills the field with the desired form inputs.
      */
     public function field_callback( $args ) {
+
         $value = get_option( $args['uid'] ); // Get the current value
         if( ! $value ) { // If no value exists
             $value = $args['default']; // Set to default
@@ -216,8 +228,13 @@ class APFA_Settings {
                 if( ! empty ( $args['options'] ) && is_array( $args['options'] ) ) {
                     $options_markup = '';
                     $iterator = 0;
+                    
                     foreach ( $args['options'] as $key => $label ) {
                         $iterator++;
+                        $checked = ' '; // checked
+                        if ( !empty( $value ) && $value[0] == $key ) {
+                            $checked = ' checked="checked" ';
+                        }
                         $options_markup .= sprintf( '<label for="%1$s_%6$s">
                             <input
                             id="%1$s_%6$s"
@@ -227,7 +244,7 @@ class APFA_Settings {
                             %4$s /> %5$s</label></br>',
                             $args['uid'], $args['type'],
                             $key,
-                            checked( $value[ array_search( $key, $value, true ) ], $key, false ),
+                            $checked,
                             $label,
                             $iterator
                         );
@@ -256,7 +273,7 @@ class APFA_Settings {
             break;
         }
         // If there is help text
-        if( $helper = $args['helper'] ){
+        if( isset($args['helper']) && $helper = $args['helper'] ){
             printf( '<span class="helper"> %s</span>', $helper ); // Show it
         }
 
@@ -270,7 +287,7 @@ class APFA_Settings {
      */
     public function apfa_menu() {
         add_menu_page(
-            $this->$plugin_name,
+            $this->plugin_name,
             'APCFA',
             'manage_options',
             'apfa',
